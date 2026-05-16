@@ -86,12 +86,12 @@ void setPosition(Board* board, char* position) {
 			9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
 			9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
 			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
+			9, -PAWN, 0, 0, 0, 0, 0, 0, 0, 9,
+			9, 0, -BISHOP, 0, 0, 0, 0, 0, 0, 9,
+			9, 0, KING, 0, 0, 0, 0, -KNIGHT, 0, 9,
 			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
-			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
-			9, 0, 0, ROOK, 0, 0, 0, KNIGHT, 0, 9,
-			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
-			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
-			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
+			9, 0, PAWN, 0, 0, 0, 0, 0, 0, 9,
+			9, PAWN, 0, 0, 0, 0, 0, 0, 0, 9,
 			9, 0, 0, 0, 0, 0, 0, 0, 0, 9,
 			9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
 			9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
@@ -117,8 +117,7 @@ void generateRookLegalMoves(Board* board, int squareIndex) {
 			c = 0;
 		} else if (board->squares[squareIndex - i] * board->playerToMove > 0) {
 			c = 0;
-		}
-		if (c) board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - i};
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - i};
 	}
 	//right
 	for (int i = 1, c = 1; board->squares[squareIndex + i] != 9 && c; i++) {
@@ -127,8 +126,7 @@ void generateRookLegalMoves(Board* board, int squareIndex) {
 			c = 0;
 		} else if (board->squares[squareIndex + i] * board->playerToMove > 0) {
 			c = 0;
-		}
-		if (c) board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i};
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i};
 	}
 	//top
 	for (int i = 10, c = 1; board->squares[squareIndex - i] != 9 && c; i += 10) {
@@ -137,8 +135,7 @@ void generateRookLegalMoves(Board* board, int squareIndex) {
 			c = 0;
 		} else if (board->squares[squareIndex - i] * board->playerToMove > 0) {
 			c = 0;
-		}
-		if (c) board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - i};
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - i};
 	}
 	//bottom
 	for (int i = 10, c = 1; board->squares[squareIndex + i] != 9 && c; i += 10) {
@@ -147,29 +144,256 @@ void generateRookLegalMoves(Board* board, int squareIndex) {
 			c = 0;
 		} else if (board->squares[squareIndex + i] * board->playerToMove > 0) {
 			c = 0;
-		}
-		if (c) board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i};
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i};
 	}
 }
 
 void generateBishopLegalMoves(Board* board, int squareIndex) {
+	int firstEmptyIndex = 0;
+	for (int i = 0; i < MAX_LEGAL_MOVES; i++) {
+		if (board->legalMoves[i].startSquare == 0) {
+			firstEmptyIndex = i;
+			break;
+		}
+	}
+	printf("first empty index %d\n", firstEmptyIndex);
 
+	//top-left
+	for (int i = 1, c = 1; board->squares[squareIndex - 11 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex - 11 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 11 * i};
+			c = 0;
+		} else if (board->squares[squareIndex - 11 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 11 * i};
+	}
+	//top-right
+	for (int i = 1, c = 1; board->squares[squareIndex - 9 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex - 9 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 9 * i};
+			c = 0;
+		} else if (board->squares[squareIndex - 9 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 9 * i};
+	}
+	//bottom-left
+	for (int i = 1, c = 1; board->squares[squareIndex + 9 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex + 9 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 9 * i};
+			c = 0;
+		} else if (board->squares[squareIndex + 9 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 9 * i};
+	}
+	//bottom-right
+	for (int i = 1, c = 1; board->squares[squareIndex + 11 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex + 11 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 11 * i};
+			c = 0;
+		} else if (board->squares[squareIndex + 11 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 11 * i};
+	}
 }
 
 void generateQueenLegalMoves(Board* board, int squareIndex) {
+	int firstEmptyIndex = 0;
+	for (int i = 0; i < MAX_LEGAL_MOVES; i++) {
+		if (board->legalMoves[i].startSquare == 0) {
+			firstEmptyIndex = i;
+			break;
+		}
+	}
+	printf("first empty index %d\n", firstEmptyIndex);
 
+	//left
+	for (int i = 1, c = 1; board->squares[squareIndex - i] != 9 && c; i++) {
+		if (board->squares[squareIndex - i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - i};
+			c = 0;
+		} else if (board->squares[squareIndex - i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - i};
+	}
+	//right
+	for (int i = 1, c = 1; board->squares[squareIndex + i] != 9 && c; i++) {
+		if (board->squares[squareIndex + i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + i};
+			c = 0;
+		} else if (board->squares[squareIndex + i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i};
+	}
+	//top
+	for (int i = 10, c = 1; board->squares[squareIndex - i] != 9 && c; i += 10) {
+		if (board->squares[squareIndex - i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - i};
+			c = 0;
+		} else if (board->squares[squareIndex - i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - i};
+	}
+	//bottom
+	for (int i = 10, c = 1; board->squares[squareIndex + i] != 9 && c; i += 10) {
+		if (board->squares[squareIndex + i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + i};
+			c = 0;
+		} else if (board->squares[squareIndex + i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i};
+	}
+	//top-left
+	for (int i = 1, c = 1; board->squares[squareIndex - 11 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex - 11 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 11 * i};
+			c = 0;
+		} else if (board->squares[squareIndex - 11 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 11 * i};
+	}
+	//top-right
+	for (int i = 1, c = 1; board->squares[squareIndex - 9 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex - 9 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 9 * i};
+			c = 0;
+		} else if (board->squares[squareIndex - 9 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 9 * i};
+	}
+	//bottom-left
+	for (int i = 1, c = 1; board->squares[squareIndex + 9 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex + 9 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 9 * i};
+			c = 0;
+		} else if (board->squares[squareIndex + 9 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 9 * i};
+	}
+	//bottom-right
+	for (int i = 1, c = 1; board->squares[squareIndex + 11 * i] != 9 && c; i++) {
+		if (board->squares[squareIndex + 11 * i] * board->playerToMove < 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 11 * i};
+			c = 0;
+		} else if (board->squares[squareIndex + 11 * i] * board->playerToMove > 0) {
+			c = 0;
+		} else board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 11 * i};
+	}
 }
 
 void generateKnightLegalMoves(Board* board, int squareIndex) {
+	int firstEmptyIndex = 0;
+	for (int i = 0; i < MAX_LEGAL_MOVES; i++) {
+		if (board->legalMoves[i].startSquare == 0) {
+			firstEmptyIndex = i;
+			break;
+		}
+	}
+	printf("first empty index %d\n", firstEmptyIndex);
 
+	//top
+	if (board->squares[squareIndex - 21] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 21};
+	} else if (board->squares[squareIndex - 21] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 21};
+	}
+	if (board->squares[squareIndex - 19] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 19};
+	} else if (board->squares[squareIndex - 19] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 19};
+	}
+	//bottom
+	if (board->squares[squareIndex + 21] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 21};
+	} else if (board->squares[squareIndex + 21] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 21};
+	}
+	if (board->squares[squareIndex + 19] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 19};
+	} else if (board->squares[squareIndex + 19] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 19};
+	}
+	//left
+	if (board->squares[squareIndex - 12] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 12};
+	} else if (board->squares[squareIndex - 12] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 12};
+	}
+	if (board->squares[squareIndex + 8] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 8};
+	} else if (board->squares[squareIndex + 8] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 8};
+	}
+	//right
+	if (board->squares[squareIndex + 12] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 12};
+	} else if (board->squares[squareIndex + 12] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 12};
+	}
+	if (board->squares[squareIndex - 8] * board->playerToMove < 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 8};
+	} else if (board->squares[squareIndex - 8] == 0) {
+		board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 8};
+	}
 }
 
 void generateKingLegalMoves(Board* board, int squareIndex) {
+	int firstEmptyIndex = 0;
+	for (int i = 0; i < MAX_LEGAL_MOVES; i++) {
+		if (board->legalMoves[i].startSquare == 0) {
+			firstEmptyIndex = i;
+			break;
+		}
+	}
+	printf("first empty index %d\n", firstEmptyIndex);
 
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			if (board->squares[squareIndex + i * 10 + j] * board->playerToMove < 0) {
+				board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + i * 10 + j};
+			} else if (board->squares[squareIndex + i * 10 + j] == 0) {
+				board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + i * 10 + j};
+			}
+		}
+	}
 }
 
 void generatePawnLegalMoves(Board* board, int squareIndex) {
+	int firstEmptyIndex = 0;
+	for (int i = 0; i < MAX_LEGAL_MOVES; i++) {
+		if (board->legalMoves[i].startSquare == 0) {
+			firstEmptyIndex = i;
+			break;
+		}
+	}
+	printf("first empty index %d\n", firstEmptyIndex);
 
+	if (board->playerToMove == -1) {
+		if (squareIndex / 10 == 3 && board->[squareIndex + 20] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 20};
+		}
+		if (board->[squareIndex + 10] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex + 10};
+		}
+		if (board->[squareIndex + 9] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 9};
+		}
+		if (board->[squareIndex + 11] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex + 11};
+		}
+	} else {
+		if (squareIndex / 10 == 8 && board->[squareIndex - 20] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 20};
+		}
+		if (board->[squareIndex - 10] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {MOVEMENT, squareIndex, squareIndex - 10};
+		}
+		if (board->[squareIndex - 9] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 9};
+		}
+		if (board->[squareIndex - 11] == 0) {
+			board->legalMoves[firstEmptyIndex++] = (Move) {CAPTURE, squareIndex, squareIndex - 11};
+		}
+	}
 }
 
 void generateMoves(Board* board) {

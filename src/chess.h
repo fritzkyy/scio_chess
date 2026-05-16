@@ -33,6 +33,7 @@ typedef struct {
 typedef struct {
 	int squares[BOARD_ARRAY_SIZE];
 	int turn;
+	int lastPawnMoved;
 	int playerToMove; //1 white, -1 black
 	Move legalMoves[MAX_LEGAL_MOVES], movesPlayed[1024];
 } Board;
