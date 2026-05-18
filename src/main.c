@@ -3,7 +3,7 @@
 int main() {
 	Board* board = createBoard();
 	setPosition(board, "");
-	generateMoves(board);
+	//generateMoves(board);
 	{
 		int i = 0;
 		while (board->legalMoves[i].startSquare != 0) {
@@ -12,6 +12,8 @@ int main() {
 			i++;
 		}
 	}
+	printBitboard(controlledSquares(board->squares, 1));
+	printBitboard(controlledSquares(board->squares, -1));
 	drawBoard(board);
 	freeBoard(board);
 	return 0;

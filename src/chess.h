@@ -7,6 +7,8 @@
 #define MAX_LEGAL_MOVES 256
 #define BOARD_ARRAY_SIZE 120
 
+typedef uint64_t bitboard;
+
 enum PieceType {
 	EMPTY,
 	PAWN,
@@ -49,3 +51,7 @@ void generateKnightLegalMoves(Board* board, int squareIndex);
 void generateKingLegalMoves(Board* board, int squareIndex);
 void generatePawnLegalMoves(Board* board, int squareIndex);
 void generateMoves(Board* board);
+bitboard controlledSquares(int squares[], int player);
+int index64(int index);
+uint64_t reverseU64(uint64_t n);
+void printBitboard(uint64_t n);
