@@ -1,8 +1,4 @@
 #pragma once
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define MAX_LEGAL_MOVES 256
 #define BOARD_ARRAY_SIZE 120
