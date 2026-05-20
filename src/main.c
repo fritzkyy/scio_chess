@@ -11,8 +11,7 @@ int main() {
 				i++;
 				continue;
 			}
-			printf("%d %d %d\n",board->legalMoves[i].moveType,
-			board->legalMoves[i].startSquare, board->legalMoves[i].targetSquare);
+			printf("%d %d\n", board->legalMoves[i].startSquare, board->legalMoves[i].targetSquare);
 			i++;
 		}
 	}
