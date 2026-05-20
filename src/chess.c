@@ -701,6 +701,8 @@ bitboard kingPosition(int squares[], int player) {
 
 int numLegalMoves(Move legalMoves[]) {
 	int i = 0;
-	while (legalMoves[i++].startSquare != 0);
+	while (legalMoves[i].startSquare > 0) {
+  i++;
+ }
 	return i;
 }
