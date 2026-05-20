@@ -19,16 +19,7 @@ typedef enum {
 	KING
 } PieceType;
 
-typedef enum {
-	MOVEMENT,
-	CAPTURE,
-	ENPASSANT,
-	SHORTCASTLE,
-	LONGCASTLE
-} MoveType;
-
 typedef struct {
-	int moveType;
 	int startSquare, targetSquare;
 } Move;
 
